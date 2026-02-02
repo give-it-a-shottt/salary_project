@@ -116,9 +116,9 @@ const Calendar: React.FC<CalendarProps> = ({
                   aspect-square rounded-2xl p-2 backdrop-blur-xl transition-all duration-200
                   border border-white/60 shadow-lg hover:shadow-xl active:scale-95
                   ${isToday(day)
-                    ? "bg-gradient-to-br from-cyan-400/50 to-violet-400/50 ring-2 ring-cyan-500"
+                    ? "bg-gradient-to-br from-cyan-400/70 to-violet-400/70 ring-2 ring-cyan-500"
                     : hasWork
-                    ? "bg-gradient-to-br from-violet-300/40 to-cyan-300/40"
+                    ? "bg-gradient-to-br from-violet-400/70 to-pink-400/70 ring-1 ring-violet-300"
                     : "bg-white/30 hover:bg-white/50"
                   }
                 `}
@@ -131,9 +131,9 @@ const Calendar: React.FC<CalendarProps> = ({
                     {day}
                   </div>
 
-                  {/* 근무 정보 표시 */}
+                  {/* 근무 정보 표시 - 데스크톱에서만 */}
                   {hasWork && record && (
-                    <div className="flex-1 flex flex-col justify-center text-xs space-y-0.5">
+                    <div className="hidden md:flex flex-1 flex-col justify-center text-xs space-y-0.5">
                       {record.regularHours > 0 && (
                         <div className="bg-cyan-500/80 text-white rounded-md px-1 py-0.5">
                           {record.regularHours}h
