@@ -1,27 +1,22 @@
-// 월급 계산에 필요한 타입 정의
+// 월급 계산기 타입 정의
 
-// 근무 교대 타입
-export type ShiftType = "day" | "evening" | "night";
-
-// 수당 항목
-export interface Allowance {
-  id: string;
-  name: string;
-  amount: number;
+// 일일 근무 기록
+export interface DailyWorkRecord {
+  id?: string;
+  date: string; // YYYY-MM-DD 형식
+  regularHours: number; // 정규 근무 시간
+  overtimeHours: number; // 잔업 시간
+  nightHours: number; // 야간 근무 시간
+  memo?: string; // 메모 (선택)
 }
 
-// 공제 항목
-export interface Deduction {
-  id: string;
-  name: string;
-  amount: number;
-}
-
-// 3교대 근무 정보
-export interface ShiftWork {
-  dayShifts: number; // 주간 근무 일수
-  eveningShifts: number; // 저녁 근무 일수
-  nightShifts: number; // 야간 근무 일수
+// 월별 설정 (시급, 수당률 등)
+export interface MonthlySettings {
+  year: number;
+  month: number;
+  hourlyWage: number; // 시급
+  overtimeRate: number; // 잔업 수당 배율 (예: 1.5 = 150%)
+  nightRate: number; // 야간 수당 배율 (예: 0.5 = 50% 추가)
 }
 
 // 세금 계산 결과
@@ -35,19 +30,29 @@ export interface TaxCalculation {
   totalDeduction: number; // 총 공제액
 }
 
-// 월급 정보 (데이터베이스에 저장될 데이터)
-export interface SalaryRecord {
+// 월별 급여 요약
+export interface MonthlySalary {
   id?: string;
-  created_at?: string;
   year: number;
   month: number;
-  baseSalary: number; // 기본급
-  shiftWork?: ShiftWork; // 교대 근무 정보
-  nightShiftRate: number; // 야간 수당 비율 (예: 0.5 = 50%)
-  allowances: Allowance[]; // 추가 수당 목록
-  deductions: Deduction[]; // 추가 공제 목록
-  taxCalculation: TaxCalculation; // 세금 계산 결과
-  totalAllowance: number; // 총 수당
-  totalDeduction: number; // 총 공제
+  settings: MonthlySettings;
+
+  // 근무 통계
+  totalRegularHours: number; // 총 정규 근무 시간
+  totalOvertimeHours: number; // 총 잔업 시간
+  totalNightHours: number; // 총 야간 근무 시간
+  totalWorkDays: number; // 총 근무 일수
+
+  // 급여 계산
+  regularPay: number; // 정규 근무 급여
+  overtimePay: number; // 잔업 수당
+  nightPay: number; // 야간 수당
+  grossSalary: number; // 총 급여 (세전)
+
+  // 세금 및 공제
+  taxCalculation: TaxCalculation;
   netSalary: number; // 실수령액
+
+  // 근무 기록
+  workRecords: DailyWorkRecord[];
 }
