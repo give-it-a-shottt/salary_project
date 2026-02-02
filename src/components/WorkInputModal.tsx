@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
-import type { DailyWorkRecord } from "../types/salary";
+import React, { useState, useEffect, useMemo } from "react";
+import { calculateDailyPay } from "../utils/salaryCalculator";
+import type { DailyWorkRecord, MonthlySettings } from "../types/salary";
 
 interface WorkInputModalProps {
   isOpen: boolean;
   date: string;
   existingRecord?: DailyWorkRecord;
+  settings: MonthlySettings;
   onClose: () => void;
   onSave: (record: DailyWorkRecord) => void;
   onDelete?: () => void;
@@ -14,6 +16,7 @@ const WorkInputModal: React.FC<WorkInputModalProps> = ({
   isOpen,
   date,
   existingRecord,
+  settings,
   onClose,
   onSave,
   onDelete,
@@ -40,6 +43,18 @@ const WorkInputModal: React.FC<WorkInputModalProps> = ({
       setMemo("");
     }
   }, [existingRecord, date]);
+
+  // 실시간 급여 계산
+  const calculatedPay = useMemo(() => {
+    const tempRecord: DailyWorkRecord = {
+      date,
+      regularHours,
+      overtimeHours,
+      nightHours,
+      holidayHours,
+    };
+    return calculateDailyPay(tempRecord, settings);
+  }, [date, regularHours, overtimeHours, nightHours, holidayHours, settings]);
 
   if (!isOpen) return null;
 
@@ -197,6 +212,50 @@ const WorkInputModal: React.FC<WorkInputModalProps> = ({
               placeholder="특이사항을 기록하세요"
             />
           </div>
+
+          {/* 예상 급여 */}
+          {(regularHours > 0 || overtimeHours > 0 || nightHours > 0 || holidayHours > 0) && (
+            <div className="backdrop-blur-xl bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl p-4 border-2 border-emerald-200">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-semibold text-emerald-800">💰 예상 급여</span>
+                <span className="text-xs text-emerald-600">시급: {settings.hourlyWage.toLocaleString()}원</span>
+              </div>
+
+              <div className="space-y-2 text-sm mb-3">
+                {calculatedPay.regularPay > 0 && (
+                  <div className="flex justify-between text-gray-600">
+                    <span>정규 근무 ({regularHours}h)</span>
+                    <span className="font-semibold">{calculatedPay.regularPay.toLocaleString()}원</span>
+                  </div>
+                )}
+                {calculatedPay.overtimePay > 0 && (
+                  <div className="flex justify-between text-gray-600">
+                    <span>잔업 ({overtimeHours}h × {settings.overtimeRate}배)</span>
+                    <span className="font-semibold">{calculatedPay.overtimePay.toLocaleString()}원</span>
+                  </div>
+                )}
+                {calculatedPay.nightPay > 0 && (
+                  <div className="flex justify-between text-gray-600">
+                    <span>야간 ({nightHours}h × {settings.nightRate}배)</span>
+                    <span className="font-semibold">{calculatedPay.nightPay.toLocaleString()}원</span>
+                  </div>
+                )}
+                {calculatedPay.holidayPay > 0 && (
+                  <div className="flex justify-between text-gray-600">
+                    <span>휴일 ({holidayHours}h × {settings.holidayRate}배)</span>
+                    <span className="font-semibold">{calculatedPay.holidayPay.toLocaleString()}원</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-3 border-t-2 border-emerald-200 flex justify-between items-center">
+                <span className="text-base font-bold text-emerald-900">총 급여</span>
+                <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
+                  {calculatedPay.totalPay.toLocaleString()}원
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* 버튼 */}
           <div className="flex gap-3 pt-2">

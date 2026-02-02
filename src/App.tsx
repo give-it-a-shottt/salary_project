@@ -163,6 +163,7 @@ function App() {
             year={currentYear}
             month={currentMonth}
             workRecords={workRecords}
+            settings={settings}
             onDateClick={handleDateClick}
             onMonthChange={handleMonthChange}
           />
@@ -197,6 +198,7 @@ function App() {
         isOpen={isWorkModalOpen}
         date={selectedDate || ""}
         existingRecord={selectedRecord}
+        settings={settings}
         onClose={() => setIsWorkModalOpen(false)}
         onSave={handleSaveWork}
         onDelete={handleDeleteWork}

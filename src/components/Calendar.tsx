@@ -1,11 +1,13 @@
 import React from "react";
 import { generateCalendarGrid, getDayName, formatDate } from "../utils/dateUtils";
-import type { DailyWorkRecord } from "../types/salary";
+import { calculateDailyPay } from "../utils/salaryCalculator";
+import type { DailyWorkRecord, MonthlySettings } from "../types/salary";
 
 interface CalendarProps {
   year: number;
   month: number;
   workRecords: DailyWorkRecord[];
+  settings: MonthlySettings;
   onDateClick: (date: string) => void;
   onMonthChange: (year: number, month: number) => void;
 }
@@ -14,6 +16,7 @@ const Calendar: React.FC<CalendarProps> = ({
   year,
   month,
   workRecords,
+  settings,
   onDateClick,
   onMonthChange,
 }) => {
@@ -108,6 +111,9 @@ const Calendar: React.FC<CalendarProps> = ({
               record.holidayHours > 0
             );
 
+            // 일별 급여 계산
+            const dailyPay = hasWork && record ? calculateDailyPay(record, settings) : null;
+
             return (
               <button
                 key={dateString}
@@ -131,8 +137,8 @@ const Calendar: React.FC<CalendarProps> = ({
                     {day}
                   </div>
 
-                  {/* 근무 정보 표시 - 데스크톱에서만 */}
-                  {hasWork && record && (
+                  {/* 근무 정보 및 급여 표시 (데스크톱만) */}
+                  {hasWork && record && dailyPay && (
                     <div className="hidden md:flex flex-1 flex-col justify-center text-xs space-y-0.5">
                       {record.regularHours > 0 && (
                         <div className="bg-cyan-500/80 text-white rounded-md px-1 py-0.5">
@@ -154,6 +160,10 @@ const Calendar: React.FC<CalendarProps> = ({
                           휴일 {record.holidayHours}h
                         </div>
                       )}
+                      {/* 일별 총 급여 */}
+                      <div className="bg-gradient-to-r from-emerald-600/90 to-green-600/90 text-white rounded-md px-1 py-0.5 font-bold mt-0.5">
+                        {dailyPay.totalPay.toLocaleString()}원
+                      </div>
                     </div>
                   )}
                 </div>
