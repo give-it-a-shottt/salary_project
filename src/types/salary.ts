@@ -7,6 +7,7 @@ export interface DailyWorkRecord {
   regularHours: number; // 정규 근무 시간
   overtimeHours: number; // 잔업 시간
   nightHours: number; // 야간 근무 시간
+  holidayHours: number; // 휴일 근무 시간
   memo?: string; // 메모 (선택)
 }
 
@@ -17,6 +18,7 @@ export interface MonthlySettings {
   hourlyWage: number; // 시급
   overtimeRate: number; // 잔업 수당 배율 (예: 1.5 = 150%)
   nightRate: number; // 야간 수당 배율 (예: 0.5 = 50% 추가)
+  holidayRate: number; // 휴일 수당 배율 (예: 1.5 = 150%)
 }
 
 // 세금 계산 결과
@@ -41,12 +43,14 @@ export interface MonthlySalary {
   totalRegularHours: number; // 총 정규 근무 시간
   totalOvertimeHours: number; // 총 잔업 시간
   totalNightHours: number; // 총 야간 근무 시간
+  totalHolidayHours: number; // 총 휴일 근무 시간
   totalWorkDays: number; // 총 근무 일수
 
   // 급여 계산
   regularPay: number; // 정규 근무 급여
   overtimePay: number; // 잔업 수당
   nightPay: number; // 야간 수당
+  holidayPay: number; // 휴일 수당
   grossSalary: number; // 총 급여 (세전)
 
   // 세금 및 공제

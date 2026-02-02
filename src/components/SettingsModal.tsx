@@ -17,11 +17,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   const [hourlyWage, setHourlyWage] = useState(settings.hourlyWage);
   const [overtimeRate, setOvertimeRate] = useState(settings.overtimeRate);
   const [nightRate, setNightRate] = useState(settings.nightRate);
+  const [holidayRate, setHolidayRate] = useState(settings.holidayRate);
 
   useEffect(() => {
     setHourlyWage(settings.hourlyWage);
     setOvertimeRate(settings.overtimeRate);
     setNightRate(settings.nightRate);
+    setHolidayRate(settings.holidayRate);
   }, [settings]);
 
   if (!isOpen) return null;
@@ -33,6 +35,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       hourlyWage,
       overtimeRate,
       nightRate,
+      holidayRate,
     });
   };
 
@@ -143,6 +146,32 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
             <p className="mt-2 text-xs text-gray-500">
               0.5배 = 시급의 50% 추가 (법정 기준)
+            </p>
+          </div>
+
+          {/* 휴일 수당 배율 */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              휴일 수당 배율
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                min="1"
+                max="3"
+                step="0.1"
+                value={holidayRate || ""}
+                onChange={(e) => setHolidayRate(Number(e.target.value))}
+                className="w-full px-4 py-4 text-lg font-semibold rounded-2xl bg-gradient-to-br from-pink-50 to-pink-100/50 border-2 border-pink-200 focus:border-pink-500 focus:ring-4 focus:ring-pink-200/50 transition-all outline-none"
+                placeholder="예: 1.5"
+                required
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-pink-600 font-bold">
+                배
+              </span>
+            </div>
+            <p className="mt-2 text-xs text-gray-500">
+              1.5배 = 시급의 150% (법정 기준)
             </p>
           </div>
 

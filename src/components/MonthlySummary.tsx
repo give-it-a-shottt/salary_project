@@ -88,6 +88,14 @@ const MonthlySummary: React.FC<MonthlySummaryProps> = ({
             <span className="text-lg ml-1">h</span>
           </div>
         </div>
+
+        <div className="backdrop-blur-xl bg-white/40 rounded-2xl p-4 shadow-lg border border-white/60">
+          <div className="text-sm text-gray-600 mb-1">휴일</div>
+          <div className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent">
+            {monthlySalary.totalHolidayHours}
+            <span className="text-lg ml-1">h</span>
+          </div>
+        </div>
       </div>
 
       {/* 급여 상세 */}
@@ -110,6 +118,12 @@ const MonthlySummary: React.FC<MonthlySummaryProps> = ({
             <span className="text-gray-600">야간 수당</span>
             <span className="font-semibold text-indigo-600">
               +{formatNumber(monthlySalary.nightPay)}원
+            </span>
+          </div>
+          <div className="flex justify-between items-center pb-3 border-b border-gray-200">
+            <span className="text-gray-600">휴일 수당</span>
+            <span className="font-semibold text-pink-600">
+              +{formatNumber(monthlySalary.holidayPay)}원
             </span>
           </div>
           <div className="flex justify-between items-center pt-2">

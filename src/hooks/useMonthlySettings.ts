@@ -12,6 +12,7 @@ export const useMonthlySettings = (year: number, month: number) => {
     hourlyWage: 10000, // 기본값
     overtimeRate: 1.5,
     nightRate: 0.5,
+    holidayRate: 1.5,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,6 +39,7 @@ export const useMonthlySettings = (year: number, month: number) => {
             hourlyWage: 10000,
             overtimeRate: 1.5,
             nightRate: 0.5,
+            holidayRate: 1.5,
           });
         } else {
           throw fetchError;
@@ -50,6 +52,7 @@ export const useMonthlySettings = (year: number, month: number) => {
           hourlyWage: parseFloat(data.hourly_wage),
           overtimeRate: parseFloat(data.overtime_rate),
           nightRate: parseFloat(data.night_rate),
+          holidayRate: parseFloat(data.holiday_rate) || 1.5,
         });
       }
     } catch (err) {
@@ -70,6 +73,7 @@ export const useMonthlySettings = (year: number, month: number) => {
         hourly_wage: newSettings.hourlyWage,
         overtime_rate: newSettings.overtimeRate,
         night_rate: newSettings.nightRate,
+        holiday_rate: newSettings.holidayRate,
       };
 
       // upsert: 존재하면 업데이트, 없으면 삽입

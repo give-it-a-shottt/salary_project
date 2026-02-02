@@ -37,6 +37,7 @@ export const useWorkRecords = (year: number, month: number) => {
         regularHours: parseFloat(row.regular_hours) || 0,
         overtimeHours: parseFloat(row.overtime_hours) || 0,
         nightHours: parseFloat(row.night_hours) || 0,
+        holidayHours: parseFloat(row.holiday_hours) || 0,
         memo: row.memo,
       }));
 
@@ -58,6 +59,7 @@ export const useWorkRecords = (year: number, month: number) => {
         regular_hours: record.regularHours,
         overtime_hours: record.overtimeHours,
         night_hours: record.nightHours,
+        holiday_hours: record.holidayHours,
         memo: record.memo || null,
       };
 

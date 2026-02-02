@@ -21,6 +21,7 @@ const WorkInputModal: React.FC<WorkInputModalProps> = ({
   const [regularHours, setRegularHours] = useState(0);
   const [overtimeHours, setOvertimeHours] = useState(0);
   const [nightHours, setNightHours] = useState(0);
+  const [holidayHours, setHolidayHours] = useState(0);
   const [memo, setMemo] = useState("");
 
   // 기존 기록이 있으면 폼에 채우기
@@ -29,11 +30,13 @@ const WorkInputModal: React.FC<WorkInputModalProps> = ({
       setRegularHours(existingRecord.regularHours);
       setOvertimeHours(existingRecord.overtimeHours);
       setNightHours(existingRecord.nightHours);
+      setHolidayHours(existingRecord.holidayHours);
       setMemo(existingRecord.memo || "");
     } else {
       setRegularHours(0);
       setOvertimeHours(0);
       setNightHours(0);
+      setHolidayHours(0);
       setMemo("");
     }
   }, [existingRecord, date]);
@@ -49,6 +52,7 @@ const WorkInputModal: React.FC<WorkInputModalProps> = ({
       regularHours,
       overtimeHours,
       nightHours,
+      holidayHours,
       memo: memo.trim() || undefined,
     };
 
@@ -153,6 +157,28 @@ const WorkInputModal: React.FC<WorkInputModalProps> = ({
                 placeholder="0"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-600 font-bold">
+                시간
+              </span>
+            </div>
+          </div>
+
+          {/* 휴일 근무 시간 */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              휴일 근무 시간
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                step="0.5"
+                min="0"
+                max="24"
+                value={holidayHours || ""}
+                onChange={(e) => setHolidayHours(Number(e.target.value))}
+                className="w-full px-4 py-4 text-lg font-semibold rounded-2xl bg-gradient-to-br from-pink-50 to-pink-100/50 border-2 border-pink-200 focus:border-pink-500 focus:ring-4 focus:ring-pink-200/50 transition-all outline-none"
+                placeholder="0"
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-pink-600 font-bold">
                 시간
               </span>
             </div>

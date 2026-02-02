@@ -104,7 +104,8 @@ const Calendar: React.FC<CalendarProps> = ({
             const hasWork = record && (
               record.regularHours > 0 ||
               record.overtimeHours > 0 ||
-              record.nightHours > 0
+              record.nightHours > 0 ||
+              record.holidayHours > 0
             );
 
             return (
@@ -146,6 +147,11 @@ const Calendar: React.FC<CalendarProps> = ({
                       {record.nightHours > 0 && (
                         <div className="bg-indigo-600/80 text-white rounded-md px-1 py-0.5">
                           야간 {record.nightHours}h
+                        </div>
+                      )}
+                      {record.holidayHours > 0 && (
+                        <div className="bg-pink-600/80 text-white rounded-md px-1 py-0.5">
+                          휴일 {record.holidayHours}h
                         </div>
                       )}
                     </div>

@@ -16,12 +16,15 @@ export const calculateDailyPay = (
   const overtimePay =
     record.overtimeHours * settings.hourlyWage * settings.overtimeRate;
   const nightPay = record.nightHours * settings.hourlyWage * settings.nightRate;
+  const holidayPay =
+    record.holidayHours * settings.hourlyWage * settings.holidayRate;
 
   return {
     regularPay,
     overtimePay,
     nightPay,
-    totalPay: regularPay + overtimePay + nightPay,
+    holidayPay,
+    totalPay: regularPay + overtimePay + nightPay + holidayPay,
   };
 };
 
@@ -89,12 +92,14 @@ export const calculateMonthlySalary = (
   let totalRegularHours = 0;
   let totalOvertimeHours = 0;
   let totalNightHours = 0;
+  let totalHolidayHours = 0;
   let totalWorkDays = 0;
 
   // 급여 계산
   let regularPay = 0;
   let overtimePay = 0;
   let nightPay = 0;
+  let holidayPay = 0;
 
   workRecords.forEach((record) => {
     const dailyPay = calculateDailyPay(record, settings);
@@ -102,11 +107,13 @@ export const calculateMonthlySalary = (
     totalRegularHours += record.regularHours;
     totalOvertimeHours += record.overtimeHours;
     totalNightHours += record.nightHours;
+    totalHolidayHours += record.holidayHours;
 
     if (
       record.regularHours > 0 ||
       record.overtimeHours > 0 ||
-      record.nightHours > 0
+      record.nightHours > 0 ||
+      record.holidayHours > 0
     ) {
       totalWorkDays++;
     }
@@ -114,9 +121,10 @@ export const calculateMonthlySalary = (
     regularPay += dailyPay.regularPay;
     overtimePay += dailyPay.overtimePay;
     nightPay += dailyPay.nightPay;
+    holidayPay += dailyPay.holidayPay;
   });
 
-  const grossSalary = regularPay + overtimePay + nightPay;
+  const grossSalary = regularPay + overtimePay + nightPay + holidayPay;
   const taxCalculation = calculateTax(grossSalary);
   const netSalary = grossSalary - taxCalculation.totalDeduction;
 
@@ -127,10 +135,12 @@ export const calculateMonthlySalary = (
     totalRegularHours,
     totalOvertimeHours,
     totalNightHours,
+    totalHolidayHours,
     totalWorkDays,
     regularPay,
     overtimePay,
     nightPay,
+    holidayPay,
     grossSalary,
     taxCalculation,
     netSalary,
