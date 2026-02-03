@@ -51,6 +51,7 @@ export interface MonthlySalary {
   overtimePay: number; // 잔업 수당
   nightPay: number; // 야간 수당
   holidayPay: number; // 휴일 수당
+  weeklyHolidayAllowance: number; // 주휴수당
   grossSalary: number; // 총 급여 (세전)
 
   // 세금 및 공제

@@ -29,6 +29,61 @@ export const calculateDailyPay = (
 };
 
 /**
+ * 주휴수당을 계산합니다
+ * 근무 일수 기준: (주 근무일수 / 5) × 8시간 × 시급
+ * 주별로 개별 계산 후 합산
+ */
+export const calculateWeeklyHolidayAllowance = (
+  workRecords: DailyWorkRecord[],
+  hourlyWage: number,
+): number => {
+  // 주별로 근무일수 계산 (월요일 시작)
+  const weeklyWorkDays = new Map<string, number>();
+
+  workRecords.forEach((record) => {
+    // 근무 시간이 0보다 크면 근무한 날로 계산
+    if (record.regularHours > 0) {
+      // Timezone 이슈 방지: 명시적으로 로컬 날짜 생성
+      const [year, month, day] = record.date.split("-").map(Number);
+      const date = new Date(year, month - 1, day);
+
+      // 해당 주의 월요일 날짜를 키로 사용
+      const weekKey = getWeekStart(date);
+      const currentDays = weeklyWorkDays.get(weekKey) || 0;
+      weeklyWorkDays.set(weekKey, currentDays + 1);
+    }
+  });
+
+  // 각 주별로 주휴수당 계산
+  let totalAllowance = 0;
+  weeklyWorkDays.forEach((days) => {
+    // 공식: (주 근무일수 / 5) × 8시간 × 시급
+    // 예: 5일 근무 → (5/5) × 8 × 10,000 = 80,000원
+    const weeklyAllowance = (days / 5) * 8 * hourlyWage;
+    totalAllowance += weeklyAllowance;
+  });
+
+  return Math.floor(totalAllowance);
+};
+
+/**
+ * 주의 시작일(월요일)을 YYYY-MM-DD 형식으로 반환합니다
+ */
+const getWeekStart = (date: Date): string => {
+  const d = new Date(date);
+  const day = d.getDay(); // 0=일요일, 1=월요일, ..., 6=토요일
+  // 월요일까지의 거리 계산 (일요일인 경우 -6, 나머지는 1-day)
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  d.setDate(diff);
+
+  const year = d.getFullYear();
+  const month = (d.getMonth() + 1).toString().padStart(2, "0");
+  const dayStr = d.getDate().toString().padStart(2, "0");
+
+  return `${year}-${month}-${dayStr}`;
+};
+
+/**
  * 4대 보험 및 세금을 계산합니다
  */
 export const calculateTax = (grossSalary: number): TaxCalculation => {
@@ -124,7 +179,14 @@ export const calculateMonthlySalary = (
     holidayPay += dailyPay.holidayPay;
   });
 
-  const grossSalary = regularPay + overtimePay + nightPay + holidayPay;
+  // 주휴수당 계산 (주별로 계산)
+  const weeklyHolidayAllowance = calculateWeeklyHolidayAllowance(
+    workRecords,
+    settings.hourlyWage,
+  );
+
+  const grossSalary =
+    regularPay + overtimePay + nightPay + holidayPay + weeklyHolidayAllowance;
   const taxCalculation = calculateTax(grossSalary);
   const netSalary = grossSalary - taxCalculation.totalDeduction;
 
@@ -141,6 +203,7 @@ export const calculateMonthlySalary = (
     overtimePay,
     nightPay,
     holidayPay,
+    weeklyHolidayAllowance,
     grossSalary,
     taxCalculation,
     netSalary,

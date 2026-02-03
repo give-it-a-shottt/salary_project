@@ -126,6 +126,12 @@ const MonthlySummary: React.FC<MonthlySummaryProps> = ({
               +{formatNumber(monthlySalary.holidayPay)}원
             </span>
           </div>
+          <div className="flex justify-between items-center pb-3 border-b border-gray-200">
+            <span className="text-gray-600">주휴수당</span>
+            <span className="font-semibold text-emerald-600">
+              +{formatNumber(monthlySalary.weeklyHolidayAllowance)}원
+            </span>
+          </div>
           <div className="flex justify-between items-center pt-2">
             <span className="font-bold text-gray-800">총 급여 (세전)</span>
             <span className="font-bold text-gray-800 text-lg">
